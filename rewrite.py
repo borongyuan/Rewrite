@@ -177,10 +177,10 @@ def main(_):
     with tf.name_scope("convert_bitmaps"):
         convert_bitmap = tf.reshape(y_hat_image, shape=[-1, 80, 80])
 
-    tf.scalar_summary('pixel_abs_loss', pixel_abs_loss)
-    tf.scalar_summary('combined_loss', combined_loss)
-    tf.scalar_summary('tv_loss', tv_loss)
-    merged = tf.merge_all_summaries()
+    tf.summary.scalar('pixel_abs_loss', pixel_abs_loss)
+    tf.summary.scalar('combined_loss', combined_loss)
+    tf.summary.scalar('tv_loss', tv_loss)
+    merged = tf.summary.merge_all()
 
     sess = tf.InteractiveSession()
     if FLAGS.mode == 'train':
@@ -200,9 +200,9 @@ def main(_):
         dataset = FontDataManager(source_font, target_font, num_examples, split)
         saver = tf.train.Saver(max_to_keep=num_checkpoints)
 
-        train_writer = tf.train.SummaryWriter(os.path.join(FLAGS.summary_dir, 'train'),
+        train_writer = tf.summary.FileWriter(os.path.join(FLAGS.summary_dir, 'train'),
                                               sess.graph)
-        validation_writer = tf.train.SummaryWriter(os.path.join(FLAGS.summary_dir, 'validation'))
+        validation_writer = tf.summary.FileWriter(os.path.join(FLAGS.summary_dir, 'validation'))
         sess.run(tf.initialize_all_variables())
         if FLAGS.capture_frame:
             print("frame capture enabled. frames saved at %s" % frame_dir)
